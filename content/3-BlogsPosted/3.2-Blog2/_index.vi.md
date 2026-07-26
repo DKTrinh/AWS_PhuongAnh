@@ -67,4 +67,5 @@ Tài liệu tham khảo
 AWS Games Blog – Open source 3D game asset generation using AWS
 TripoSG Repository: https://github.com/VAST-AI-Research/TripoSG
 MV-Adapter Repository: https://github.com/huanngzh/MV-Adapter
-<img src="/images/Blogs/blog2.png" alt="Blog 2" width="1000" />
+
+<img src="/AWS_PhuongAnh/images/Blogs/blog2.png" alt="Blog 2" width="1000" />
