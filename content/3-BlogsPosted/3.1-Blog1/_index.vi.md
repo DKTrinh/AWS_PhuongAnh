@@ -73,7 +73,11 @@ Mô hình AI Gateway cân bằng tốt giữa developer experience và enterpris
 
 ## Tài liệu tham khảo
 
-* AWS Compute Blog – Building an AI gateway to Amazon Bedrock with Amazon API Gateway
-* GitHub Repository: amazon-api-gateway-ai-gateway-pattern
+* **AWS Compute Blog – Building an AI gateway to Amazon Bedrock with Amazon API Gateway:**
+  https://aws.amazon.com/blogs/compute/building-an-ai-gateway-to-amazon-bedrock-with-amazon-api-gateway/
+  
+* **GitHub Repository:**
+  https://github.com/aws-samples/amazon-api-gateway-ai-gateway-pattern
+  
 
 <img src="/AWS_PhuongAnh/images/Blogs/blog1.png" alt="Blog 1" width="1000" />
