@@ -87,6 +87,6 @@ The addition of the MiniMax family on Amazon Bedrock provides another powerful o
 
 ## References
 
-* AWS Machine Learning Blog – Run MiniMax models on Amazon Bedrock
-* MiniMax Models Documentation on AWS: https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-minimax.html
-
+* **AWS Machine Learning Blog – Run MiniMax models on Amazon Bedrock:**
+https://aws.amazon.com/blogs/machine-learning/run-minimax-models-on-amazon-bedrock/
+* **MiniMax Models Documentation on AWS:** https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-minimax.html
