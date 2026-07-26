@@ -71,4 +71,4 @@ Although the generated assets might not be immediately usable for AAA projects d
 * TripoSG Repository: https://github.com/VAST-AI-Research/TripoSG
 * MV-Adapter Repository: https://github.com/huanngzh/MV-Adapter
 
-<img src="/images/Blogs/blog2.png" alt="Blog 2" width="1000" />
+<img src="/AWS_PhuongAnh/images/Blogs/blog2.png" alt="Blog 2" width="1000" />
