@@ -1,115 +1,74 @@
 ---
 title: "Proposal"
-date: 2024-01-01
+date: 2026-07-26
 weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
 
-In this section, you need to summarize the contents of the workshop that you **plan** to conduct.
-
-# IoT Weather Platform for Lab Research
-## A Unified AWS Serverless Solution for Real-Time Weather Monitoring
+## Tracker Maintenance – Maintenance Management System on AWS
+### A secure operational solution with a Multi-tier Cloud Web architecture and JWT Authentication
 
 ### 1. Executive Summary
-The IoT Weather Platform is designed for the ITea Lab team in Ho Chi Minh City to enhance weather data collection and analysis. It supports up to 5 weather stations, with potential scalability to 10-15, utilizing Raspberry Pi edge devices with ESP32 sensors to transmit data via MQTT. The platform leverages AWS Serverless services to deliver real-time monitoring, predictive analytics, and cost efficiency, with access restricted to 5 lab members via Amazon Cognito.
+Tracker Maintenance is a maintenance task management system built on a modern Multi-tier architecture on Amazon Web Services (AWS). From a technical perspective, the user interface (Frontend) is developed using React/Vue, while the core processing system (Backend) is built with Node.js/FastAPI, integrated with a secure relational database. The system is completely autonomous in managing identity through a JWT Auth mechanism. 
 
-### 2. Problem Statement
-### What’s the Problem?
-Current weather stations require manual data collection, becoming unmanageable with multiple units. There is no centralized system for real-time data or analytics, and third-party platforms are costly and overly complex.
+### 2. Objectives
+With Tracker Maintenance, the core objective focuses on optimizing management workflows and maximizing system security:
+- Build a stable Cloud infrastructure, clearly separating Front-end and Back-end access flows.
+- Replace dependent authentication solutions (like Cognito) with a more flexible and autonomous internal JWT system.
+- Implement proactive defense mechanisms against password-guessing attacks (Brute-force protection).
+- Optimize server load by utilizing direct file uploads to S3 (Pre-signed URL) and automated event processing.
 
-### The Solution
-The platform uses AWS IoT Core to ingest MQTT data, AWS Lambda and API Gateway for processing, Amazon S3 for storage (including a data lake), and AWS Glue Crawlers and ETL jobs to extract, transform, and load data from the S3 data lake to another S3 bucket for analysis. AWS Amplify with Next.js provides the web interface, and Amazon Cognito ensures secure access. Similar to Thingsboard and CoreIoT, users can register new devices and manage connections, though this platform operates on a smaller scale and is designed for private use. Key features include real-time dashboards, trend analysis, and low operational costs.
+### 3. Problem Statement
+- **Current Situation:** Traditional tracking systems are often vulnerable to brute-force attacks, suffer from exposed API Key configurations, and frequently encounter bottlenecks when processing large file uploads through the main server.
+- **Solution:** Tracker Maintenance leverages an Amazon VPC virtual private network to protect the database. The system transitions to JWT authentication, strictly secures configurations using `.env` files, and applies an Event-Driven architecture with S3 and Lambda for file processing.
+- **Benefits:** Delivers a highly available system with robust security from the network layer to the application layer, while providing a seamless experience for end-users.
 
-### Benefits and Return on Investment
-The solution establishes a foundational resource for lab members to develop a larger IoT platform, serving as a study resource, and provides a data foundation for AI enthusiasts for model training or analysis. It reduces manual reporting for each station via a centralized platform, simplifying management and maintenance, and improves data reliability. Monthly costs are $0.66 USD per the AWS Pricing Calculator, with a 12-month total of $7.92 USD. All IoT equipment costs are covered by the existing weather station setup, eliminating additional development expenses. The break-even period of 6-12 months is achieved through significant time savings from reduced manual work.
+### 4. System Architecture
+The entire infrastructure is deployed on AWS within an internal Amazon VPC network, clearly divided into a Public Subnet (hosting the EC2 server) and a Private Subnet (hosting the RDS database).
 
-### 3. Solution Architecture
-The platform employs a serverless AWS architecture to manage data from 5 Raspberry Pi-based stations, scalable to 15. Data is ingested via AWS IoT Core, stored in an S3 data lake, and processed by AWS Glue Crawlers and ETL jobs to transform and load it into another S3 bucket for analysis. Lambda and API Gateway handle additional processing, while Amplify with Next.js hosts the dashboard, secured by Cognito. The architecture is detailed below:
+**Technologies used:**
+- **Frontend:** React/Vue (Static hosting and CDN distribution).
+- **Backend:** Node.js / FastAPI.
+- **Database:** Amazon RDS (PostgreSQL/MySQL).
 
-![IoT Weather Station Architecture](/images/2-Proposal/edge_architecture.jpeg)
+**Core AWS Services:**
+- **Amazon EC2:** The main server running the Backend application, handling JWT authentication logic and Brute-force control.
+- **Amazon S3:** Static storage for the Frontend and a repository for files/images uploaded by users.
+- **Amazon CloudFront & Route 53:** Global content delivery network (CDN) and high-speed DNS resolution.
+- **AWS Lambda & Amazon SNS:** Automated Event-Driven processing flow. When a new file arrives on S3, Lambda is triggered to process it, and SNS sends a notification to technicians.
+- **Amazon CloudWatch:** Centralized monitoring and logging service to detect system errors.
 
-![IoT Weather Platform Architecture](/images/2-Proposal/platform_architecture.jpeg)
+![System Architecture](/images/2-Proposal/architecture.png?classes=shadow)
 
-### AWS Services Used
-- **AWS IoT Core**: Ingests MQTT data from 5 stations, scalable to 15.
-- **AWS Lambda**: Processes data and triggers Glue jobs (two functions).
-- **Amazon API Gateway**: Facilitates web app communication.
-- **Amazon S3**: Stores raw data in a data lake and processed outputs (two buckets).
-- **AWS Glue**: Crawlers catalog data, and ETL jobs transform and load it.
-- **AWS Amplify**: Hosts the Next.js web interface.
-- **Amazon Cognito**: Secures access for lab users.
+**Core Data Flows:**
+- **Secure Authentication Flow:** The user sends a login request. The EC2 server checks the Brute-force logic (blocking if there are too many failed attempts). If valid, the Backend issues a secure JWT Token for the user to access business APIs.
+- **Optimized File Upload Flow:** The Frontend calls an API to EC2 to request permission. EC2 returns a temporary S3 Pre-signed URL. The Frontend uses this URL to upload the file directly to S3, bypassing heavy transmission through EC2.
+- **Event Notification Flow:** As soon as the file is successfully uploaded to S3 (Event Trigger), AWS Lambda automatically initiates processing logic and triggers Amazon SNS to push real-time notifications.
 
-### Component Design
-- **Edge Devices**: Raspberry Pi collects and filters sensor data, sending it to IoT Core.
-- **Data Ingestion**: AWS IoT Core receives MQTT messages from the edge devices.
-- **Data Storage**: Raw data is stored in an S3 data lake; processed data is stored in another S3 bucket.
-- **Data Processing**: AWS Glue Crawlers catalog the data, and ETL jobs transform it for analysis.
-- **Web Interface**: AWS Amplify hosts a Next.js app for real-time dashboards and analytics.
-- **User Management**: Amazon Cognito manages user access, allowing up to 5 active accounts.
+### 5. Technical Implementation
+The development team divides the technical tasks to ensure project progress:
+- **Front-end & Back-end Development:** WhooDuck1810 and phuonganh284 collaborate to develop the React/Vue interface, set up the `.env` security environment, and write API logic on Node.js/FastAPI.
+- **Authentication Security:** Remove AWS Cognito integration, program, and fully transition to a JWT authentication mechanism combined with Anti-login protection features.
+- **AWS Infrastructure Deployment:** Set up the VPC network architecture, configure S3 Pre-signed URLs, and the Lambda - SNS event flow.
 
-### 4. Technical Implementation
-**Implementation Phases**
-This project has two parts—setting up weather edge stations and building the weather platform—each following 4 phases:
-- Build Theory and Draw Architecture: Research Raspberry Pi setup with ESP32 sensors and design the AWS serverless architecture (1 month pre-internship)
-- Calculate Price and Check Practicality: Use AWS Pricing Calculator to estimate costs and adjust if needed (Month 1).
-- Fix Architecture for Cost or Solution Fit: Tweak the design (e.g., optimize Lambda with Next.js) to stay cost-effective and usable (Month 2).
-- Develop, Test, and Deploy: Code the Raspberry Pi setup, AWS services with CDK/SDK, and Next.js app, then test and release to production (Months 2-3).
+### 6. Implementation Roadmap
+The implementation roadmap for the Tracker Maintenance project takes place over 8 weeks:
+- **Weeks 1-2:** Research Web architecture overview on AWS. Initialize the repository and source code structure.
+- **Weeks 3-4:** Build the basic application framework. Set up secure environment variables (`.env`), and clean up exposed API keys from Git history.
+- **Weeks 5-6:** Deploy the application to AWS infrastructure (EC2, S3, CloudFront), integrate the RDS database, and configure initial Amplify/Cognito steps.
+- **Weeks 7-8:** Optimize authentication (replace Cognito with JWT). Implement anti-brute-force features, optimize UI/UX, and finalize system documentation.
 
-**Technical Requirements**
-- Weather Edge Station: Sensors (temperature, humidity, rainfall, wind speed), a microcontroller (ESP32), and a Raspberry Pi as the edge device. Raspberry Pi runs Raspbian, handles Docker for filtering, and sends 1 MB/day per station via MQTT over Wi-Fi.
-- Weather Platform: Practical knowledge of AWS Amplify (hosting Next.js), Lambda (minimal use due to Next.js), AWS Glue (ETL), S3 (two buckets), IoT Core (gateway and rules), and Cognito (5 users). Use AWS CDK/SDK to code interactions (e.g., IoT Core rules to S3). Next.js reduces Lambda workload for the fullstack web app.
+### 7. Cost Estimation
+The combined architecture of EC2 and AWS managed services helps optimize costs:
+- **Amazon EC2 & RDS:** Utilizing small server instances (t2.micro/t3.micro) falls within the Free Tier limits for the development environment.
+- **Amazon S3 & CloudFront:** Static content delivery and storage costs are extremely low, mostly covered by the monthly free tier.
+- **AWS Lambda & SNS:** Charged based on the number of function invocations and messages, extremely economical for the event processing flow.
 
-### 5. Timeline & Milestones
-**Project Timeline**
-- Pre-Internship (Month 0): 1 month for planning and old station review.
-- Internship (Months 1-3): 3 months.
-    - Month 1: Study AWS and upgrade hardware.
-    - Month 2: Design and adjust architecture.
-    - Month 3: Implement, test, and launch.
-- Post-Launch: Up to 1 year for research.
+### 8. Risk Assessment
+- **Risk of Sensitive Information Exposure:** Completely resolved through the strict synchronization of `.env` files and proper `.gitignore` configuration.
+- **Password Guessing (Brute-force) Attacks:** Prevented by Anti-login protection logic programmed directly in the Backend.
+- **Database Intrusion:** Very low risk thanks to the VPC network design that completely isolates Amazon RDS in the Private Subnet, preventing direct access from the Internet.
 
-### 6. Budget Estimation
-You can find the budget estimation on the [AWS Pricing Calculator](https://calculator.aws/#/estimate?id=621f38b12a1ef026842ba2ddfe46ff936ed4ab01).  
-Or you can download the [Budget Estimation File](../attachments/budget_estimation.pdf).
-
-### Infrastructure Costs
-- AWS Services:
-    - AWS Lambda: $0.00/month (1,000 requests, 512 MB storage).
-    - S3 Standard: $0.15/month (6 GB, 2,100 requests, 1 GB scanned).
-    - Data Transfer: $0.02/month (1 GB inbound, 1 GB outbound).
-    - AWS Amplify: $0.35/month (256 MB, 500 ms requests).
-    - Amazon API Gateway: $0.01/month (2,000 requests).
-    - AWS Glue ETL Jobs: $0.02/month (2 DPUs).
-    - AWS Glue Crawlers: $0.07/month (1 crawler).
-    - MQTT (IoT Core): $0.08/month (5 devices, 45,000 messages).
-
-Total: $0.7/month, $8.40/12 months
-
-- Hardware: $265 one-time (Raspberry Pi 5 and sensors).
-
-### 7. Risk Assessment
-#### Risk Matrix
-- Network Outages: Medium impact, medium probability.
-- Sensor Failures: High impact, low probability.
-- Cost Overruns: Medium impact, low probability.
-
-#### Mitigation Strategies
-- Network: Local storage on Raspberry Pi with Docker.
-- Sensors: Regular checks and spares.
-- Cost: AWS budget alerts and optimization.
-
-#### Contingency Plans
-- Revert to manual methods if AWS fails.
-- Use CloudFormation for cost-related rollbacks.
-
-### 8. Expected Outcomes
-#### Technical Improvements: 
-Real-time data and analytics replace manual processes.  
-Scalable to 10-15 stations.
-#### Long-term Value
-1-year data foundation for AI research.  
-Reusable for future projects.
+### 9. Expected Results
+Successfully deploy a secure, stable, and performance-optimized Tracker Maintenance system. The project serves as a testament to the seamless integration between traditional Multi-tier Web architecture (EC2, RDS) and modern Cloud features (S3 Pre-signed URL, Event-Driven Lambda), resulting in a powerful maintenance management tool that is fully autonomous in terms of authentication.
